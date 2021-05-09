@@ -2,11 +2,11 @@
 // import {remove} from './remove'
 // import {copyToClipboard} from './copy_to_clipboard'
 
-var get_all_groups=()=>{
+var get_all_groups = () => {
     var main_section = "";
-
-    groupSchema.groups.forEach((group) => {
-        let top = `
+    if (groupSchema && groupSchema.groups) {
+        groupSchema.groups.forEach((group) => {
+            let top = `
     <div class="card">
     <div class="card-header" id="groupheader${group.groupId}">
         <h5 class="mb-0">
@@ -52,10 +52,14 @@ var get_all_groups=()=>{
                 let field_html = fieldset(`accordionCollapse-${group.groupId}`, field);
                 main_section += field_html;
             });
-
+            const groupDetails = {
+                "groupId": group.groupId,
+                "groupName": group.groupName,
+                "sectionId": 1
+            }
             let end = `
         <div class="">
-            <button class="btn btn-primary btn-sm" onclick="addField()">
+            <button id="accordionCollapse-${group.groupId}-addfield" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addFieldModal" data-whatever="1,section1,${group.groupId},${group.groupName}">
             Add another field +
             </button>
         </div>
@@ -64,13 +68,25 @@ var get_all_groups=()=>{
     </div>
     `;
 
-        main_section += end;
-    });
+            main_section += end;
+        });
 
-    const content_div = document.createElement("div");
-    content_div.innerHTML = main_section;
+        const content_div = document.createElement("div");
+        content_div.innerHTML = main_section;
 
-    const accGroups = document.getElementById("accordionGroups");
-    console.log(accGroups);
-    accGroups.innerHTML = main_section;
+        const accGroups = document.getElementById("accordionGroups");
+        // console.log(accGroups);
+        accGroups.innerHTML = main_section;
+    }
+    else {
+        const accGroups = document.getElementById("accordionGroups");
+        // console.log(accGroups);
+        const no_groups_div = document.createElement('div')
+        no_groups_div.innerHTML = "**No Groups are present here**<br><br>"
+        no_groups_div.className = "title text-center p-3"
+        temp = document.getElementById("add_group_button")
+        temp.id = "add_group_button1"
+        no_groups_div.appendChild(temp)
+        accGroups.appendChild(no_groups_div);
+    }
 };

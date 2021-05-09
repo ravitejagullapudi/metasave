@@ -1,30 +1,20 @@
-var remove = (type, id) => {
+var remove = async(type, id) => {
     console.log(id)
-    const l = id.split('-')
+    l = id.split('-')
     let group_id
     let field_id
-    if (type == "field") {
+    let is_removed
+    if(type == "field"){
         group_id = l[1]
         field_id = l[3]
-        // console.log(group_id,field_id)
-        const groups = groupSchema.groups
-        for (var i = 0; i < l.length; i++) {
-            // console.log( groupSchema.groups[i].groupId, group_id)
-            if ( groupSchema.groups[i].groupId == group_id) {
-                 groupSchema.groups[i].fields =  groupSchema.groups[i].fields.filter(field => {
-                    return field.fieldId != field_id
-                })
-                break
-            }
-        }
+        is_removed = await eel.remove_specific_data(current_section,group_id,field_id)()
     }
-    else if (type == "group") {
-        // console.log(l)
+    else{
         group_id = l[1]
-        groupSchema.groups = groupSchema.groups.filter(group => {
-            return group.groupId != group_id
-        })
+        is_removed = await eel.remove_specific_data(current_section,group_id)()
     }
-    refreshdiv(type,l[0]+'-'+l[1])
+    if(!is_removed)
+        alert("Deleting is not done")
+    refreshdiv("removeField",l[0]+'-'+l[1])
     // console.log(group_id,field_id)
 }
