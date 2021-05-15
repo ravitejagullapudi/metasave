@@ -6,14 +6,32 @@ import json
 from tinydb import TinyDB, Query
 import shortuuid as suuid
 
-storage_path = f'{os.environ["USERPROFILE"]}\\AppData\\Local\\.MetaSave\\db.json'
+# Configuring Path
+directory_path = f'{os.environ["USERPROFILE"]}\\.MetaSave\\'
+file_path = f'db.json'
+storage_path = directory_path+file_path
+
+if not os.path.exists(directory_path):
+    os.makedirs(directory_path)
+
 db = TinyDB(storage_path)
 query = Query()
-sections_table = db.table('sections')
-if len(sections_table)==0:
-    sections_table.insert({'sectionId':suuid.uuid(), 'sectionName':'Default'})
 
+# If there are no sections it will create a default section
+sections_table = db.table('sections')
+if len(sections_table) == 0:
+    sections_table.insert(
+        {'sectionId': suuid.uuid(), 'sectionName': 'Default'})
+
+
+# Check for updates
+
+
+
+
+# Initialising eel
 eel.init('web')
+
 
 
 
@@ -27,84 +45,170 @@ def metasave(arg):
     print(arg)
     return "got it"
 
+# To load sections
+
+
 @eel.expose
 def loadSections():
     sections = sections_table.all()
     s = []
     for section in sections:
-        print(section)
-        s.append({"id":section['sectionId'], "sectionName":section['sectionName']})
+        # print(section)
+        s.append({"id": section['sectionId'],
+                 "sectionName": section['sectionName']})
     return sections
+
+# To load groups and fields for given section
+
 
 @eel.expose
 def loadSectionData(current_section_id):
     data = {}
     sections_table = db.table('sections')
-    sections = sections_table.search(query.sectionId == str(current_section_id))
+    sections = sections_table.search(
+        query.sectionId == str(current_section_id))
     if(len(sections)):
         data['sectionId'] = sections[0]['sectionId']
         data['sectionName'] = sections[0]['sectionName']
-        data['groups']=[]
+        data['groups'] = []
         groups_table = db.table('groups')
-        groups = groups_table.search(query.sectionId == str(current_section_id))
-
+        groups = groups_table.search(
+            query.sectionId == str(current_section_id))
+        # print(groups)
         fields_table = db.table('fields')
         for group in groups:
             single_group = {}
             single_group['groupId'] = group['groupId']
             single_group['groupName'] = group['groupName']
 
-            single_group['fields']=[]
-            fields = fields_table.search(query.groupId == str(group['groupId']))
+            single_group['fields'] = []
+            fields = fields_table.search(
+                query.groupId == str(group['groupId']))
             for field in fields:
                 single_field = {}
                 single_field['fieldId'] = field['fieldId']
                 single_field['label'] = field['label']
                 single_field['value'] = field['value']
-                
+
                 single_group['fields'].append(single_field)
-            
+
             data['groups'].append(single_group)
-    
+
     print(data)
     return data
 
-@eel.expose
-def add_group(section_id,groupName):
-    pass
+# Add Section
+
 
 @eel.expose
-def remove_specific_data(current_section_id, group_id, field_id=None):
-    global data
+def add_section(section_name):
     try:
-        groupSchema = data['sections'][current_section_id]
-        if field_id is not None:
-            groups = groupSchema['groups']
-            for i in range(len(groups)):
-                if (groupSchema['groups'][i]['groupId'] == group_id):
-                    groupSchema['groups'][i]['fields'] = list(filter(
-                        lambda field: field['fieldId'] != field_id, groupSchema['groups'][i]['fields']))
-                    break
-        else:
-            groupSchema['groups'] = list(
-                filter(lambda group: group['groupId'] != group_id, groupSchema['groups']))
-        data['sections'][current_section] = groupSchema
-        data_file1 = open(storage_path, "w")
-        json.dump(data, data_file1, indent=2)
-        data_file1.close()
+        sections_table = db.table('sections')
+        sections_table.insert({
+            'sectionId': suuid.uuid(),
+            'sectionName': section_name
+        })
         return True
     except Exception as e:
         print(e)
         return False
 
+# Edit Section
 @eel.expose
-def add_field(field):
+def update_section(section_id, section_name):
+    # print(section_id, section_name)
+    try:
+        sections_table = db.table('sections')
+        sections_table.update(
+            {
+                'sectionName': section_name
+            },
+            query.sectionId == str(section_id)
+        )
+        return True
+    except Exception as e:
+        return False
+
+
+# Add group
+@eel.expose
+def add_group(section_id, groupName):
+    try:
+        groups_table = db.table('groups')
+        groups_table.insert({
+            'sectionId': section_id,
+            'groupId': suuid.uuid(),
+            'groupName': groupName
+        })
+        return True
+    except Exception as e:
+        print("Adding Group: ")
+        print(e)
+        return False
+
+# Update Group
+@eel.expose
+def update_group(section_id, group_id,group_name):
+    print(section_id,group_id, group_name)
+    try:
+        groups_table = db.table('groups')
+        groups_table.update(
+            {
+                'groupName': group_name
+            },
+            query.sectionId == str(section_id) and query.groupId == str(group_id)
+        )
+        return True
+    except Exception as e:
+        return False
+
+
+# Add field
+@eel.expose
+def add_field(field_detail):
     global data
     try:
-        data_file1 = open(storage_path, "w")
-        json.dump(data, data_file1, indent=2)
-        data_file1.close()
-        loadEntireData()
+        fields_table = db.table('fields')
+        fields_table.insert({
+            'sectionId': field_detail["sectionId"],
+            'groupId': field_detail["groupId"],
+            'fieldId': suuid.uuid(),
+            'label': field_detail["field"]["label"],
+            'value': field_detail["field"]["value"]
+        })
+        # print(fields_table)
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+# Remove group or field
+
+
+@eel.expose
+def remove_specific_data(current_section_id, group_id=None, field_id=None):
+    global data
+    try:
+        if field_id is not None:
+            fields_table = db.table('fields')
+            fields_table.remove(query.sectionId == str(
+                current_section_id) and query.groupId == str(group_id) and query.fieldId == field_id)
+        elif group_id is not None:
+            fields_table = db.table('fields')
+            fields_table.remove(query.sectionId == str(
+                current_section_id) and query.groupId == str(group_id))
+            groups_table = db.table('groups')
+            groups_table.remove(query.sectionId == str(
+                current_section_id) and query.groupId == str(group_id))
+        else:
+            fields_table = db.table('fields')
+            fields_table.remove(query.sectionId == str(current_section_id))
+            groups_table = db.table('groups')
+            groups_table.remove(query.sectionId == str(current_section_id))
+            sections_table = db.table('sections')
+            if(len(sections_table) > 1):
+                sections_table.remove(
+                    query.sectionId == str(current_section_id))
         return True
     except Exception as e:
         print(e)

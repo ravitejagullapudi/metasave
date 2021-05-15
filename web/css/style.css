@@ -3,6 +3,42 @@
 */
 @import "../fonts/font.css";
 
+#accordionGroups{
+    margin: 2vw;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-direction: row;
+}
+#accordionGroups>*{
+    flex: 1 1;
+    border-left: 2px solid #7386D5;
+    margin: 1.5vw;
+}
+.accordion{
+    margin-bottom: 2.5vw;
+    min-width: 300px;
+    max-width: 100%;
+}
+
+.accordion-btn{
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+    background-color:transparent;
+    border: none;
+    text-align: left;
+    margin-bottom: 2px;
+    text-transform: capitalize;
+}
+.accordion-btn:hover{
+    text-decoration: underline;
+}
+
+
+#current-section{
+    font-size: 30px;
+}
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -142,15 +178,18 @@ a.article, a.article:hover {
     color: #fff !important;
 }
 
-
+.card-header{
+    color: rgb(228, 224, 224);
+}
 
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
 #content {
-    padding: 20px;
+    padding: 8px;
     min-height: 100vh;
     transition: all 0.3s;
+    margin: 2vw;
 }
 
 svg:not(:root).svg-inline--fa {
@@ -186,4 +225,15 @@ svg:not(:root) {
     #sidebarCollapse span {
         display: none;
     }
+}
+
+@media (max-width:400px) {
+    .btn{
+        font-size: 12px;
+    }
+}
+
+.card-header{
+    background-color:  #fafafa;
+    /* border-left: 2px solid black; */
 }

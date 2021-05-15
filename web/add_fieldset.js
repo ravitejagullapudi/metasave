@@ -1,4 +1,4 @@
-var data_saved = false
+let field_saved = false
 $(document).on('show.bs.modal', '#addFieldModal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var group_details = button.data('whatever') // Extract info from data-* attributes
@@ -6,8 +6,8 @@ $(document).on('show.bs.modal', '#addFieldModal', function (event) {
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     group_details = group_details.split(',');
     console.log(group_details)
-    var sectionId = group_details[0];
-    var sectionName = group_details[1];
+    var sectionId = current_section;
+    var sectionName = document.getElementById("current_section").textContent;
     var groupId = group_details[2];
     var groupName = group_details[3];
     var modal = $(this)
@@ -16,20 +16,22 @@ $(document).on('show.bs.modal', '#addFieldModal', function (event) {
     modal.find('#addFieldSectionName').val(sectionName)
     modal.find('#addFieldGroupId').val(groupId)
     modal.find('#addFieldGroupName').val(groupName)
-    data_saved = false
+    field_saved = false
 })
 
 $(document).on('hide.bs.modal', '#addFieldModal', function (event) {
     let button = $(event.relatedTarget) // Button that triggered the modal
-    if (!data_saved) {
-        let sure = confirm("Did you want to close this without adding field ?")
-        if (sure)
-            document.getElementById("addFieldModalForm").reset();
-        else
-            $('#groupName').modal('show')
+    if (!field_saved) {
+        // let sure = confirm("Did you want to close this without adding field ?")
+        // if (sure)
+        //     document.getElementById("addFieldModalForm").reset();
+        // else
+        //     $('#addFieldModal').modal('show')
+
     }
     else {
         document.getElementById("addFieldModalForm").reset();
+        field_saved = false
     }
 })
 
@@ -52,10 +54,12 @@ var addFieldToGroup = async () => {
         console.log(addField)
         const is_added = await eel.add_field(addField)
         if (is_added) {
-            refreshdiv("Added Field")
+            field_saved = true
+            refreshdiv("AddField")
         }
         else {
 
         }
     }
+    $('#addFieldModal').modal('hide')
 }
