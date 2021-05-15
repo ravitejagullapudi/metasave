@@ -1,13 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
-block_cipher = None
+block_cipher = pyi_crypto.PyiBlockCipher(key='ravitejag')
 
 
 a = Analysis(['metasave.py'],
-             pathex=['G:\\F\\Desktop Apps\\MetaSave'],
+             pathex=['C:\\Users\\vgullapudi\\Non-Synced Files\\Desktop\\Apps\\metasave'],
              binaries=[],
-             datas=[('G:\\F\\Desktop Apps\\MetaSave\\venv\\lib\\site-packages\\eel\\eel.js', 'eel'), ('web', 'web')],
+             datas=[('C:\\venv\\lib\\site-packages\\eel\\eel.js', 'eel'), ('web', 'web')],
              hiddenimports=['bottle_websocket'],
              hookspath=[],
              runtime_hooks=[],
@@ -24,7 +24,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='metasave',
+          name='MetaSave',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

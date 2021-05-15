@@ -28,7 +28,6 @@ if len(sections_table) == 0:
 
 
 
-
 # Initialising eel
 eel.init('web')
 

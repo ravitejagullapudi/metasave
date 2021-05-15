@@ -1,0 +1,1 @@
+python -m eel metasave.py web --onefile --noconsole --name MetaSave --key=ravitejag
