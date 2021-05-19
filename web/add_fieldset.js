@@ -55,7 +55,7 @@ var addFieldToGroup = async () => {
         const is_added = await eel.add_field(addField)
         if (is_added) {
             field_saved = true
-            refreshdiv("AddField")
+            refreshdiv("AddField",addField.groupId)
         }
         else {
 

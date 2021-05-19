@@ -24,7 +24,7 @@ let toggle_accordion = (id) => {
 
 }
 
-var get_all_groups = async () => {
+var get_all_groups = async (group_id=null) => {
     var main_section = "";
     console.log(groupSchema)
     if (groupSchema && groupSchema.groups) {
@@ -97,7 +97,7 @@ var get_all_groups = async () => {
     
     <div
         id="accordionCollapse-${group.groupId}"
-        class="collapse ${row_num == 1 ? 'show' : ''}"
+        class="collapse ${group_id!=null?(group.groupId==group_id?'show':''):(row_num == 1?'show' : '')}"
         aria-labelledby="headingOne"
     >
         <div class="card-body">`;

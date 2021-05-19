@@ -1,1 +1,1 @@
-python -m eel metasave.py web --onefile --noconsole --name MetaSave --key=ravitejag
+python -m eel metasave.py web --onefile --noconsole --name MetaSave --icon=icon.ico --key=ravitejagullapudi

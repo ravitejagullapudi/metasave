@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
-block_cipher = pyi_crypto.PyiBlockCipher(key='ravitejag')
+block_cipher = pyi_crypto.PyiBlockCipher(key='ravitejagullapudi')
 
 
 a = Analysis(['metasave.py'],
@@ -31,4 +31,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False )
+          console=False , icon='icon.ico')

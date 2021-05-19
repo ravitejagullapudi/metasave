@@ -25,14 +25,23 @@ if len(sections_table) == 0:
 
 
 # Check for updates
-
+version = 1.0
 
 
 # Initialising eel
 eel.init('web')
 
-
-
+@eel.expose
+def get_version():
+    return version
+    
+@eel.expose
+def get_username():
+    fields_table = db.table('fields')
+    return {
+        "username":os.environ["USERPROFILE"].split('\\')[-1],
+        "fields_count":len(fields_table)
+    }
 
 @eel.expose
 def setStoragePath(path):
@@ -41,7 +50,7 @@ def setStoragePath(path):
 
 @eel.expose
 def metasave(arg):
-    print(arg)
+    #print(arg)
     return "got it"
 
 # To load sections
@@ -52,7 +61,7 @@ def loadSections():
     sections = sections_table.all()
     s = []
     for section in sections:
-        # print(section)
+        # #print(section)
         s.append({"id": section['sectionId'],
                  "sectionName": section['sectionName']})
     return sections
@@ -73,7 +82,7 @@ def loadSectionData(current_section_id):
         groups_table = db.table('groups')
         groups = groups_table.search(
             query.sectionId == str(current_section_id))
-        # print(groups)
+        # #print(groups)
         fields_table = db.table('fields')
         for group in groups:
             single_group = {}
@@ -93,7 +102,7 @@ def loadSectionData(current_section_id):
 
             data['groups'].append(single_group)
 
-    print(data)
+    #print(data)
     return data
 
 # Add Section
@@ -109,13 +118,13 @@ def add_section(section_name):
         })
         return True
     except Exception as e:
-        print(e)
+        #print(e)
         return False
 
 # Edit Section
 @eel.expose
 def update_section(section_id, section_name):
-    # print(section_id, section_name)
+    # #print(section_id, section_name)
     try:
         sections_table = db.table('sections')
         sections_table.update(
@@ -141,14 +150,14 @@ def add_group(section_id, groupName):
         })
         return True
     except Exception as e:
-        print("Adding Group: ")
-        print(e)
+        #print("Adding Group: ")
+        #print(e)
         return False
 
 # Update Group
 @eel.expose
 def update_group(section_id, group_id,group_name):
-    print(section_id,group_id, group_name)
+    #print(section_id,group_id, group_name)
     try:
         groups_table = db.table('groups')
         groups_table.update(
@@ -175,10 +184,10 @@ def add_field(field_detail):
             'label': field_detail["field"]["label"],
             'value': field_detail["field"]["value"]
         })
-        # print(fields_table)
+        # #print(fields_table)
         return True
     except Exception as e:
-        print(e)
+        #print(e)
         return False
 
 # Remove group or field
@@ -210,7 +219,7 @@ def remove_specific_data(current_section_id, group_id=None, field_id=None):
                     query.sectionId == str(current_section_id))
         return True
     except Exception as e:
-        print(e)
+        #print(e)
         return False
 
 

@@ -37,12 +37,12 @@ var remove = async () => {
         group_id = l[1]
         field_id = l[3]
         is_removed = await eel.remove_specific_data(current_section, group_id, field_id)()
-        refreshdiv("removeField", l[0] + '-' + l[1])
+        refreshdiv("removeField", group_id)
     }
     else if (type == "group") {
         group_id = l[1]
         is_removed = await eel.remove_specific_data(current_section, group_id)()
-        refreshdiv("removeField", l[0] + '-' + l[1])
+        refreshdiv("removeGroup")
     }
     else {
         is_removed = await eel.remove_specific_data(current_section)()
