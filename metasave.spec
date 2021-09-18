@@ -5,7 +5,7 @@ block_cipher = pyi_crypto.PyiBlockCipher(key='ravitejagullapudi')
 
 
 a = Analysis(['metasave.py'],
-             pathex=['C:\\Users\\vgullapudi\\Non-Synced Files\\Desktop\\Apps\\metasave'],
+             pathex=['C:\\Users\\vgullapudi\\Personal\\metasave'],
              binaries=[],
              datas=[('C:\\venv\\lib\\site-packages\\eel\\eel.js', 'eel'), ('web', 'web')],
              hiddenimports=['bottle_websocket'],

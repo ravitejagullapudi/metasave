@@ -5,7 +5,7 @@ const some_script = () => {
 
 var show_disclaimer = async () => {
   const div = document.createElement('div')
-  div.innerHTML = "<ul><li>We are not storing your data any where in the servers. </li><li>We are not collecting any personal information from your system even the data in this application</li> <li>We are storing your data in your local system itself.  Optional Backup Feature will be provided on demand.</li>"
+  div.innerHTML = "<ul><li>We are not storing your sensitive data any where in the servers. </li><li>We are not collecting any personal information from your system even the data in this application. (If required, the name is stored because it is useful to identify the user and sending the update notification)</li> <li>We are storing your data in your local system itself.  Optional Backup Feature will be provided on demand.</li>"
   const div_heading = document.createElement('div')
   div_heading.innerHTML = "**Disclaimer**"
   $('#downloadModal').modal('show')

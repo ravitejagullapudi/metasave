@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#999999" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <title>Meta Save</title>
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Jquery bs -->
+  <script src="jquery/jquery-1.12.0.min.js"></script>
+  <script src="jquery/jquery-3.5.1.min.js"></script>
+  <!-- JS bs -->
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <!-- EEL -->
+  <script type="text/javascript" src="/eel.js"></script>
+  <!-- My custom js -->
+  <script src="index.js"></script>
+  <script src="fieldset.js"></script>
+  <script src="copy_to_clipboard.js"></script>
+  <script src="get_sections.js"></script>
+  <script src="get_all_groups.js"></script>
+  <script src="remove1.js"></script>
+  <script src="add_fieldset.js"></script>
+  <script src="add_group.js"></script>
+  <script src="add_section.js"></script>
+</head>
+
+<body onload="initialLoad()">
+  <div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>MetaSave</h3>
+      </div>
+      <ul class="list-unstyled components" id="nav-items"></ul>
+      <div>
+        <a id="add_section_button" class="btn btn-outline-secondary text-white btn-block" data-toggle="modal"
+          data-target="#addSectionModal" data-whatever="">Add Section +</a>
+      </div>
+      <div>
+        <a id="delete_section_button" class="btn btn-outline-danger btn-block text-white" data-toggle="modal"
+          data-target="#deleteModal" data-whatever="section">
+          Delete Section
+        </a>
+      </div>
+
+      <!-- <ul class="list-unstyled CTAs">
+                    <li><a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a></li>
+                    <li><a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a></li>
+                </ul> -->
+    </nav>
+
+    <!-- Page Content Holder -->
+    <div id="content" style="width: 100%">
+      <nav class="navbar navbar-default shadow" style="display: flex; flex-direction: row">
+        <div class="container-fluid" style="flex: 1">
+          <div class="navbar-header">
+            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+              <!-- <i class="glyphicon glyphicon-align-left"></i> -->
+              <svg class="svg-inline--fa fa-align-left fa-w-14" aria-hidden="true" data-prefix="fas"
+                data-icon="align-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                data-fa-i2svg="">
+                <path fill="currentColor"
+                  d="M288 44v40c0 8.837-7.163 16-16 16H16c-8.837 0-16-7.163-16-16V44c0-8.837 7.163-16 16-16h256c8.837 0 16 7.163 16 16zM0 172v40c0 8.837 7.163 16 16 16h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16zm16 312h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm256-200H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16h256c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16z">
+                </path>
+              </svg>
+              <span>Menu</span>
+            </button>
+          </div>
+        </div>
+        <div style="flex: 2; margin-right: 1px" class="text-left">
+          <h2 sty>MetaSave</h2>
+        </div>
+      </nav>
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title pl-4">
+            <div>
+              <h2 id="current_section" class="text-capitalize">Section 1</h2>
+            </div>
+            <div class="d-flex justify-content-md-end justify-content-end">
+              <button id="add_group_button" class="btn btn-primary btn-sm" data-toggle="modal"
+                data-target="#addGroupModal" data-whatever="">
+                Add Group +
+              </button>
+            </div>
+          </div>
+          <div class="card-text"></div>
+          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        </div>
+        <div id="accordionGroups"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals for taking input -->
+  <div class="modal fade" id="addFieldModal" tabindex="-1" role="dialog" aria-labelledby="addFieldModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addFieldModalLongTitle">
+            Add Field to the group
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="addFieldModalForm" class="needs-validation" novalidate>
+          <input type="text" readonly hidden class="form-control" id="addFieldSectionId" name="sectionId" />
+          <input type="text" readonly hidden class="form-control" id="addFieldSectionName" name="sectionName" />
+          <input type="text" readonly hidden class="form-control" id="addFieldGroupId" name="groupId" />
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="groupName" class="col-form-label">Group Name:</label>
+              <input type="text" readonly class="form-control" id="addFieldGroupName" />
+            </div>
+            <div class="form-group">
+              <label for="addFieldLabel" class="col-form-label">Label:</label>
+              <input type="text" class="form-control" name="addFieldLabel" id="addFieldLabel"
+                placeholder="Enter Label for the field here..." required />
+              <div class="invalid-feedback">
+                Please choose a Label for your new field.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addFieldValue" class="col-form-label">Value:</label>
+              <input type="text" class="form-control" name="addFieldValue" id="addFieldValue"
+                placeholder="Enter Value for the field here..." required />
+              <div class="invalid-feedback">
+                Please choose a Value for your new field.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="addFieldToGroup()">
+              Save changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-labelledby="addGroupModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addGroupModalLongTitle">
+            Add Group here
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="addGroupModalForm" class="needs-validation" novalidate>
+          <input type="text" readonly hidden class="form-control" id="addGroupSectionId" name="sectionId" />
+          <input type="text" readonly hidden class="form-control" id="addGroupSectionName" name="sectionName" />
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="addGroupLabel" class="col-form-label">GroupName:</label>
+              <input type="text" class="form-control" name="addGroupLabel" id="addGroupLabel"
+                placeholder="Enter Group Name here..." required />
+              <div class="invalid-feedback">
+                Please choose a Name for your new Group.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="addGroupToSection()">
+              Save changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="addSectionModal" tabindex="-1" role="dialog" aria-labelledby="addSectionModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addSectionModalLongTitle">
+            Add Section here
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-whatever="">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="addSectionModalForm" class="needs-validation" novalidate>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="addSectionLabel" class="col-form-label">Section Name:</label>
+              <input type="text" class="form-control" name="addSectionLabel" id="addSectionLabel"
+                placeholder="Enter Section Name here..." required />
+              <div class="invalid-feedback">
+                Please choose a Name for your new Section.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="addSection()">
+              Save changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLongTitle">
+            Did you really want to delete?
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer" style="margin-left: auto; margin-right: auto">
+          <button type="button" class="btn btn-danger" onclick="remove()" data-dismiss="modal">
+            Yes, Delete it
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="downloadModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="downloadModalLongTitle">
+            Got an update, please follow below steps
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="downloadModalBody">
+        </div>
+        <div class="modal-footer" style="margin-left: auto; margin-right: auto">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <footer class="bg-light text-center text-lg-start">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        Designed (with bootstrap) & Developed by Raviteja
+      <!-- <a class="text-dark" href=""></a> -->
+    </div>
+  </footer>
+
+  <!-- jQuery and js CDN -->
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#sidebarCollapse").on("click", function () {
+        $("#sidebar").toggleClass("active");
+      });
+    });
+    window.addEventListener("resize", (event) => {
+      event.target.innerWidth < 700
+        ? (document.getElementById("sidebar").className = "")
+        : "";
+    });
+
+    var validate = () => {
+      "use strict";
+      window.addEventListener(
+        "load",
+        function () {
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.getElementsByClassName("needs-validation");
+          // Loop over them and prevent submission
+          var validation = Array.prototype.filter.call(
+            forms,
+            function (form) {
+              form.addEventListener(
+                "submit",
+                function (event) {
+                  if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }
+                  form.classList.add("was-validated");
+                },
+                false
+              );
+            }
+          );
+        },
+        false
+      );
+    };
+    validate();
+    document.onkeydown = function (e) {
+      if (event.keyCode == 123) {
+        return false;
+      }
+      if (e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
+       return false;
+      }
+      if (e.ctrlKey && e.shiftKey && e.keyCode == "J".charCodeAt(0)) {
+        return false;
+      }
+    };
+    $(document).bind("contextmenu", function (e) {
+      e.preventDefault();
+    });
+
+    $(document).keydown(function (e) {
+      if (e.which === 123) {
+        return false;
+      }
+    });
+  </script>
+</body>
+
+</html>
